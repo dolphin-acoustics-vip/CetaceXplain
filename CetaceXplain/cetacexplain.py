@@ -124,3 +124,6 @@ class ImageClassifierModel(ClassifierModel):
   def show_image(image_array_data):
     plt.imshow(image_array_data)
 
+  def convert_time_series_to_wavfile():
+    pass
+
