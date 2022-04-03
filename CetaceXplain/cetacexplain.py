@@ -23,17 +23,18 @@ class ClassifierModel:
         self.model = model
         self.class_names = None
 
-    def report_stats(self, test_data, test_labels):
-        """This function returns statistical metrics about the model's performance, 
-        including precisiion, recall and F1 score.
+    def get_label_indices(self, test_data, multiclass_test_labels):
+
+        """This function returns the indices of labels for predicted labels and actual labels. 
+        The label indices should correspond to self.class_names.
         
 
         Parameters
         ----------
         test_data : numpy array
             Array of data for testing
-        test_labels : numpy array
-            Correct labels corresponding to test_data image arrays
+        multiclass_test_labels : numpy array
+            Correct labels corresponding to test_data arrays
 
         Returns
         -------
@@ -44,13 +45,35 @@ class ClassifierModel:
 
         probability_scores = self.model.predict(test_data)  # list of predicted class probabilities for each image
                                                             # model.predict better for batches but equivalent to model()
-        predicted_labels = probability_scores.argmax(axis = 1)
-        test_labels = test_labels.argmax(axis = 1)
+        predicted_label_indices = probability_scores.argmax(axis = 1)
+        test_label_indices = multiclass_test_labels.argmax(axis = 1)
+        return test_label_indices, predicted_label_indices 
+    
+    def report_stats(self, test_data, multiclass_test_labels):
+        """This function returns statistical metrics about the model's performance, 
+        including precisiion, recall and F1 score.
+        
 
-        return classification_report(test_labels, predicted_labels, target_names = self.class_names, 
-                                    labels = np.unique(np.concatenate([predicted_labels, test_labels])))
+        Parameters
+        ----------
+        test_data : numpy array
+            Array of data for testing
+        multiclass_test_labels : numpy array
+            Correct labels corresponding to test_data arrays
 
-    def show_confusion_matrix(self, test_data, test_labels):
+        Returns
+        -------
+        string
+            String giving statistical metrics on the model's performance
+
+        """
+        # get indices of labels for predicted labels and actual labels 
+        test_label_indices, predicted_label_indices = self.get_label_indices(test_data, multiclass_test_labels)
+
+        return classification_report(test_label_indices, predicted_label_indices, target_names = self.class_names, 
+                                    labels = np.unique(np.concatenate([predicted_label_indices, test_label_indices])))
+
+    def show_confusion_matrix(self, test_data, multiclass_test_labels):
 
         """
         This function plots a confusion matrix for some given data by comparing the 
@@ -60,8 +83,8 @@ class ClassifierModel:
         ----------
         test_data : numpy array
             Array of data of for testing
-        test_labels : numpy array
-            Correct labels corresponding to test_data image arrays
+        multiclass_test_labels : numpy array
+            Correct labels corresponding to test_data array
 
         Returns
         -------
@@ -69,15 +92,13 @@ class ClassifierModel:
 
         """
 
-        probability_scores = self.model.predict(test_data)  # list of predicted class probabilities for each image
-                                                                # model.predict better for batches but equivalent to model()
-        predicted_labels = probability_scores.argmax(axis = 1)
-        test_labels = test_labels.argmax(axis = 1)
+        # get indices of labels for predicted labels and actual labels 
+        test_label_indices, predicted_label_indices = self.get_label_indices(test_data, multiclass_test_labels)
         
         # adapted from https://scikit-learn.org/stable/modules/generated/sklearn.metrics.ConfusionMatrixDisplay.html#sklearn.metrics.ConfusionMatrixDisplay.from_predictions
         # create confusion matrix object and plot its results
-        cm = confusion_matrix(test_labels, predicted_labels, 
-                                labels = np.unique(np.concatenate([predicted_labels, test_labels])))
+        cm = confusion_matrix(test_label_indices, predicted_label_indices, 
+                                labels = np.unique(np.concatenate([predicted_label_indices, test_label_indices])))
         display = ConfusionMatrixDisplay(confusion_matrix=cm, 
                                             display_labels=self.class_names)
         display.plot()
@@ -117,7 +138,7 @@ class ImageClassifierModel(ClassifierModel):
         # get unique label names if not directly specified
         self.class_names = kwargs.get("class_names", list(set(data_labels))) 
 
-    def explain(self, test_images , background_images = None, 
+    def explain(self, test_images , multiclass_test_labels = None, background_images = None, 
         background_image_limit: int = 20, test_image_limit: int = 4):
 
         """
@@ -136,6 +157,8 @@ class ImageClassifierModel(ClassifierModel):
         background_images : numpy array, optional
             Images used to get background understanding of the model's expected predictions.
             The default is self.image_data.
+        multiclass_test_labels : numpy array
+            Correct image labels corresponding to test_images arrays
         background_image_limit : int, optional
             Maximum number of background images used in calculation.
             The default is 20.
@@ -174,12 +197,11 @@ class ImageClassifierModel(ClassifierModel):
         labels = np.reshape(labels, (shap_values[0].shape[0], len(shap_values))) # reshape array appropriately 
                                                                                  # for shap compatibility 
 
-        # print predicted labels for each test image
-        probability_scores = self.model.predict(test_images)  
-        predicted_label_indices = probability_scores.argmax(axis = 1)
-        print("Predicted Labels (in order of appearance of images below):")
-        for index in predicted_label_indices:
-            print(self.class_names[index])
+        # print predicted labels and actual labels for each test image
+        test_label_indices, predicted_label_indices = self.get_label_indices(test_images, multiclass_test_labels)
+        print("Predicted Labels\t\tActual Labels\t\t(in order of appearance of images below)")
+        for i in range(len(predicted_label_indices)):
+            print(self.class_names[predicted_label_indices[i]] + "\t\t" + self.class_names[test_label_indices[i]])
 
         # plot the image explanations
         shap.image_plot(shap_values, test_images, labels = labels)
