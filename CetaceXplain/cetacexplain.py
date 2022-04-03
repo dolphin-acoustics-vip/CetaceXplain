@@ -38,8 +38,8 @@ class ClassifierModel:
 
         Returns
         -------
-        string
-            String giving statistical metrics on the model's performance
+        tuple
+            Tuple of arrays with test label indices and predicted label indices (in that order)
 
         """
 
