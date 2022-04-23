@@ -1,5 +1,5 @@
 # CetaceXplain
-This is a module meant to provide useful ways of visualizing and understanding the  manner in which machine learning models classify cetacean whistle contours. One of the most useful features of this module is that it uses the SHAP library (https://github.com/slundberg/shap) among other to
+This is a module meant to provide useful ways of visualizing and understanding the  manner in which machine learning models classify cetacean whistle contours. One of the most useful features of this module is that it uses the SHAP library (https://github.com/slundberg/shap) among others to
  highlight pixels of importance to machine learning models' decisions.
  
 ## Example of Use in Machine Learning Model Analysis
