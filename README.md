@@ -11,7 +11,7 @@ Here, we show a real example of how CetaceXplain was used for analysis. Below ar
 ## Example 2
 <img src = "images/Sample_Image_Explanation2.png" width = "700">
 
-We see from the above that the model appears to do a reasonably good job at tracing whistle contours. This is likely due to the good pattern-finding capabilities of the Xception architecture as well as the normalization of the spectrgrams. The model still has some flaws however. We can see, for example, that in the first row of Example 1,  the model is influenced partially by a bit of noise in the lower frequencies, indicated by the horizontal clustering of pixel highlights near the bottom of the spectrograms.
+We see from the above that the model appears to do a reasonably good job at tracing whistle contours. This is likely due to the good pattern-finding capabilities of the Xception architecture as well as the normalization of the spectrograms. The model still has some flaws however. We can see, for example, that in the first row of Example 1,  the model is influenced partially by a bit of noise in the lower frequencies, indicated by the horizontal clustering of pixel highlights near the bottom of the spectrograms.
 
 As shown below, we can also get more in-depth statistsics about the model using this module (which uses the help of the sci-kit-learn library: https://scikit-learn.org/stable/).
 
