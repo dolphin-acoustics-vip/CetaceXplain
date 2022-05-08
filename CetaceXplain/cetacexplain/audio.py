@@ -4,6 +4,9 @@ from scipy import signal
 from scipy.signal import chirp
 
 #TODO: Think about adding amplitude data to wav file generation
+#TODO: Fix rough transition "clicking" between frequency values passed to generate_wavfile
+#      see https://stackoverflow.com/questions/68471877/tone-sweep-from-array-of-frequencies-with-python/68472399#68472399
+#      for the start to a possible solutiuon
 def generate_wavfile(wavfile_name, frequencies, total_duration = 1, num_of_intervals = 1000):
     """
     Generate a wav file from a given array of frequency values. The wav file is saved in the local directory.
