@@ -9,7 +9,8 @@ from .audio import generate_wavfile
 
 tf.compat.v1.disable_v2_behavior() # disabling certain newer tf features for compatibility with shap
  
-# TODO: Find a way to use shap values to recreate audible (wavfile) version of what highlighted spectrograms indicate
+# TODO: Find a way to improve audible explanations - consider, for example, an approach where the SHAP scores of nearby pixels 
+#       are accounted for when selecting the best pixel row for each column of an image
 # TODO: Figure out why explain function is so memory intensive
 # NOTE: Loading transfer learning models with the new tensorflow folder saving format seems to give an error for model loading,
 #       so it is safer to save them in an h5 format for now. Custom-made models seem to be fine with being loaded in 
