@@ -14,7 +14,7 @@ def generate_wavfile(wavfile_name, frequencies, total_duration = 1, num_of_inter
     Parameters
     ----------
     wavfile_name : string
-        Name of wavfiel to be generated.
+        Name of wavfile to be generated.
     frequencies : numpy array
         Numpy array of frequncy values (in Hz).
     total_duration : float, optional
