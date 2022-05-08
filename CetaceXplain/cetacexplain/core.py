@@ -263,8 +263,3 @@ def show_image(image_array_data):
       """
       plt.imshow(image_array_data)
 
-def convert_time_series_to_wavfile():
-      """This funcion converts a time series of frequency values to a wave file
-      """
-      pass
-
